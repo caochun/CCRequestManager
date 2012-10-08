@@ -10,6 +10,7 @@
 
 @interface CCAppDelegate : UIResponder <UIApplicationDelegate>{
     NSInteger networkActivityRefCount;
+    NSDictionary *_appConfig;
 
 }
 

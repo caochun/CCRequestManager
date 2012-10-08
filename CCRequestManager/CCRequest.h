@@ -84,7 +84,7 @@ typedef enum {
 @property(nonatomic, retain) id result;
 
 // urls are of the form
-// http://<server>/<basePath>/<resourcePath>?<key>=<value>
+// https://<host>/<apipath>/<path>?<key>=<value>
 @property(nonatomic, retain) NSURL *url;
 @property(nonatomic, assign) id<CCRequestDelegate> delegate;
 

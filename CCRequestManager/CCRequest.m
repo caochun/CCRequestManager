@@ -4,7 +4,7 @@
 #import "CCRequest.h"
 #import "JSONKit.h"
 #import "CCRequestManager.h"
-#import "CCAppDelegate+Additions.h"
+#import "CCAppDelegate+CCAdditions.h"
 //#import "Foundation+KGOAdditions.h"
 
 NSString * const CCRequestErrorDomain = @"info.nemoworks.CCRequest.ErrorDomain";
@@ -134,6 +134,7 @@ NSString * const CCRequestLastRequestTime = @"last";
 //        }
 //        [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
 //
+        
         if (self.ifModifiedSince) {
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
             [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
@@ -288,7 +289,24 @@ NSString * const CCRequestLastRequestTime = @"last";
 //		_data = nil;
 //	}
 //
+        NSError *error = nil;
+        id parsedResult=[jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode error:&error];
+        if (error){
+            [self terminateWithErrorCode:CCRequestErrorBadResponse userInfo:[error userInfo]];
+            return;
+        }
+        
+        NSDictionary *resultDict = (NSDictionary *)parsedResult;
+        id responseError = [resultDict objectForKey:@"error"];
+        if (![responseError isKindOfClass:[NSNull class]]) {
+        	[self terminateWithErrorCode:CCRequestErrorServerMessage userInfo:responseError];
+        	return;
+        }
+        
+        self.result=resultDict;
+
     }
+    
 	BOOL canProceed = [self.result isKindOfClass:self.expectedResponseType];
 	if (!canProceed) { 
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"result type does not match expected response type", @"message", nil];

@@ -10,9 +10,12 @@
 
 #define CC_SHARED_APP_DELEGATE() (CCAppDelegate *)[[UIApplication sharedApplication] delegate]
 
-@interface CCAppDelegate (Additions)
+@interface CCAppDelegate (CCAdditions)
+
 
 - (void)showNetworkActivityIndicator;
 - (void)hideNetworkActivityIndicator;
+
+@property (nonatomic, readonly) NSDictionary *appConfig;
 
 @end

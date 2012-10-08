@@ -6,10 +6,21 @@
 //  Copyright (c) 2012年 Nemoworks. All rights reserved.
 //
 
-#import "CCAppDelegate+Additions.h"
+#import "CCAppDelegate+CCAdditions.h"
 
-@implementation CCAppDelegate (Additions)
+@implementation CCAppDelegate (CCAdditions)
 
+#pragma mark -
+#pragma mark Shared resources
+
+- (NSDictionary *)appConfig {
+    if (!_appConfig) {
+        NSString * mainFile = [[NSBundle mainBundle] pathForResource:@"Config" ofType:@"plist"];
+        _appConfig = [[NSDictionary alloc] initWithContentsOfFile:mainFile];
+        DLog(@"current app config dictionary: %@", [_appConfig description]);
+    }
+    return _appConfig;
+}
 
 - (void)showNetworkActivityIndicator {
     networkActivityRefCount++;

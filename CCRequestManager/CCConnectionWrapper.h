@@ -5,22 +5,22 @@
 
 #import <Foundation/Foundation.h>
 
-@class ConnectionWrapper;
+@class CCConnectionWrapper;
 
 @protocol CCConnectionWrapperDelegate <NSObject>
 
-- (void)connection:(ConnectionWrapper *)wrapper handleData:(NSData *)data;
+- (void)connection:(CCConnectionWrapper *)wrapper handleData:(NSData *)data;
 
 @optional
 
-- (void)connectionDidReceiveResponse:(ConnectionWrapper *)wrapper; // an opportunity to turn on the spinny, i.e. [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-- (void)connection:(ConnectionWrapper *)wrapper handleConnectionFailureWithError:(NSError *)error;
-- (void)connection:(ConnectionWrapper *)wrapper madeProgress:(CGFloat)progress;
+- (void)connectionDidReceiveResponse:(CCConnectionWrapper *)wrapper; // an opportunity to turn on the spinny, i.e. [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+- (void)connection:(CCConnectionWrapper *)wrapper handleConnectionFailureWithError:(NSError *)error;
+- (void)connection:(CCConnectionWrapper *)wrapper madeProgress:(CGFloat)progress;
 
 @end
 
 
-@interface ConnectionWrapper : NSObject {
+@interface CCConnectionWrapper : NSObject {
 	NSMutableData *tempData;
 
     NSURL *theURL;
@@ -34,7 +34,7 @@
 @property (nonatomic, retain) NSURL *theURL;
 @property (nonatomic, retain) NSURLConnection *urlConnection;
 @property (nonatomic, assign, readonly) BOOL isConnected;
-@property (nonatomic, assign) id<CCConnectionWrapperDelegate> delegate;
+@property (nonatomic, retain) id<CCConnectionWrapperDelegate> delegate;
 
 - (id)initWithDelegate:(id<CCConnectionWrapperDelegate>)theDelegate;
 - (void)cancel;
