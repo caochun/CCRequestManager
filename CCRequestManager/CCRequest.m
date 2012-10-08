@@ -250,6 +250,8 @@ NSString * const CCRequestLastRequestTime = @"last";
 			[self terminateWithErrorCode:CCRequestErrorBadResponse userInfo:params];
 			return;
 		}
+        
+        
 		
 //		SBJsonParser *jsonParser = [[[SBJsonParser alloc] init] autorelease];
 //		NSError *error = nil;

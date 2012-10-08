@@ -136,6 +136,7 @@
 		3460B7DC1622C7FB00FA21B0 /* CCRequestManager */ = {
 			isa = PBXGroup;
 			children = (
+				3460B8281622CB9F00FA21B0 /* Thirdparty */,
 				3460B8231622C82700FA21B0 /* Classes */,
 				3460B7DD1622C7FB00FA21B0 /* Supporting Files */,
 			);
@@ -178,22 +179,29 @@
 		3460B8231622C82700FA21B0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				3460B80B1622C82200FA21B0 /* JSONKit.h */,
-				3460B80C1622C82200FA21B0 /* JSONKit.m */,
 				3460B80D1622C82200FA21B0 /* CCConnectionWrapper.h */,
 				3460B80E1622C82200FA21B0 /* CCConnectionWrapper.m */,
 				3460B80F1622C82200FA21B0 /* CCRequest.h */,
 				3460B8101622C82200FA21B0 /* CCRequest.m */,
 				3460B8111622C82200FA21B0 /* CCRequestManager.h */,
 				3460B8121622C82200FA21B0 /* CCRequestManager.m */,
-				3460B8131622C82200FA21B0 /* Reachability.h */,
-				3460B8141622C82200FA21B0 /* Reachability.m */,
 				3460B8151622C82200FA21B0 /* CCAppDelegate+Additions.h */,
 				3460B8161622C82200FA21B0 /* CCAppDelegate+Additions.m */,
 				3460B7E51622C7FB00FA21B0 /* CCAppDelegate.h */,
 				3460B7E61622C7FB00FA21B0 /* CCAppDelegate.m */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		3460B8281622CB9F00FA21B0 /* Thirdparty */ = {
+			isa = PBXGroup;
+			children = (
+				3460B8131622C82200FA21B0 /* Reachability.h */,
+				3460B8141622C82200FA21B0 /* Reachability.m */,
+				3460B80B1622C82200FA21B0 /* JSONKit.h */,
+				3460B80C1622C82200FA21B0 /* JSONKit.m */,
+			);
+			name = Thirdparty;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -485,6 +493,7 @@
 				3460B8071622C7FB00FA21B0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3460B8081622C7FB00FA21B0 /* Build configuration list for PBXNativeTarget "CCRequestManagerTests" */ = {
 			isa = XCConfigurationList;
@@ -493,6 +502,7 @@
 				3460B80A1622C7FB00FA21B0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

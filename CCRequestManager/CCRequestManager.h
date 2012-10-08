@@ -48,7 +48,6 @@
 //- (BOOL)isModuleAuthorized:(ModuleTag *)moduleTag;
 
 - (CCRequest *)requestWithDelegate:(id<CCRequestDelegate>)delegate
-                             module:(ModuleTag *)module
                                path:(NSString *)path
                             version:(NSUInteger)version
                              params:(NSDictionary *)params;
