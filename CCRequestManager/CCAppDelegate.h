@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCAppDelegate : UIResponder <UIApplicationDelegate>
+@interface CCAppDelegate : UIResponder <UIApplicationDelegate>{
+    NSInteger networkActivityRefCount;
+
+}
 
 @property (strong, nonatomic) UIWindow *window;
 
