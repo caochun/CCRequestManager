@@ -48,44 +48,55 @@
 
 #pragma mark -
 
-- (CCRequest *)requestWithDelegate:(id<CCRequestDelegate>)delegate
-                               resource:(NSString *)resource
-                             params:(NSDictionary *)params
-{
-	BOOL authorized = YES; // TODO: determine this value
-
-    // TODO: add version parameters v and vmin.  this will become required.
-
+- (CCRequest *)requestURLWithDelegate:(id<CCRequestDelegate>)delegate
+                            rawUrl:(NSURL *)rawUrl
+                            params:(NSDictionary *)params{
+    BOOL authorized = YES; // TODO: determine this value
+    
+    
 	CCRequest *request = nil;
 	if (authorized) {
-		request = [[CCRequest alloc] init];
-		request.delegate = delegate;
-        NSURL *requestBaseURL = [_baseURL URLByAppendingPathComponent:resource];
+        request = [[CCRequest alloc] init];
+        request.delegate = delegate;
         
-
-		NSMutableDictionary *mutableParams = [params mutableCopy];
+        NSMutableDictionary *mutableParams = [params mutableCopy];
         if (mutableParams == nil) {
             // make sure this is not nil in case we want to auto-append parameters
             mutableParams = [NSMutableDictionary dictionary];
         }
-
+        
 		if (_accessToken) {
 			[mutableParams setObject:_accessToken forKey:@"token"];
 		}
+        
 
-#ifdef DEBUG
-        [mutableParams setObject:@"1" forKey:@"debug"];
-#endif
-
-		request.url = [NSURL URLWithQueryParameters:mutableParams baseURL:requestBaseURL];
-		request.resourcePath = resource;
+        
+		request.url = [NSURL URLWithQueryParameters:mutableParams baseURL:rawUrl];
+		request.resourcePath = nil;
 		request.getParams = mutableParams;
-	} else {
+    } else {
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:nil];
 		NSError *error = [NSError errorWithDomain:CCRequestErrorDomain code:CCRequestErrorForbidden userInfo:userInfo];
 		[self showAlertForError:error request:request];
 	}
 	return request;
+}
+
+
+
+- (CCRequest *)requestResourceWithDelegate:(id<CCRequestDelegate>)delegate
+                                resourcePath:(NSString *)resourcePath
+                                params:(NSDictionary *)params
+{
+
+    NSURL *requestBaseURL = [_baseURL URLByAppendingPathComponent:resourcePath];
+    
+    
+	CCRequest *request= [self requestURLWithDelegate:delegate rawUrl:requestBaseURL params:params];
+    
+    request.resourcePath = resourcePath;
+    return request;
+	
 }
 
 #pragma mark Errors
@@ -152,7 +163,6 @@
 	}
 	
 	if (title) {
-
         
         NSString *retryOption = nil;
         if (canRetry) {
@@ -171,8 +181,8 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex != [alertView cancelButtonIndex]) {
-        [_retryRequest connect];
-        _retryRequest = nil;
+//        [_retryRequest connect];
+//        _retryRequest = nil;
     }
 }
 
@@ -458,15 +468,15 @@ NSString * const kHTTPSURIScheme = @"https";
 
 
 - (void)requestWillTerminate:(CCRequest *)request {
-    if (request == _helloRequest) {
-        _helloRequest = nil;
-    } else if (request == _sessionRequest) {
-        _sessionRequest = nil;
-    } else if (request == _logoutRequest) {
-        _logoutRequest = nil;
-    }else if (request == _logoutRequest) {
-        _logoutRequest = nil;
-    }
+//    if (request == _helloRequest) {
+//        _helloRequest = nil;
+//    } else if (request == _sessionRequest) {
+//        _sessionRequest = nil;
+//    } else if (request == _logoutRequest) {
+//        _logoutRequest = nil;
+//    }else if (request == _logoutRequest) {
+//        _logoutRequest = nil;
+//    }
 //    else if (request == _deviceRegistrationRequest) {
 //        _deviceRegistrationRequest = nil;
 //    }

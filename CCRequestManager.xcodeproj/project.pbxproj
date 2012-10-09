@@ -38,6 +38,14 @@
 		3460B8201622C82200FA21B0 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3460B8141622C82200FA21B0 /* Reachability.m */; };
 		3460B8211622C82200FA21B0 /* CCAppDelegate+CCAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3460B8161622C82200FA21B0 /* CCAppDelegate+CCAdditions.m */; };
 		3460B8221622C82200FA21B0 /* CCAppDelegate+CCAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3460B8161622C82200FA21B0 /* CCAppDelegate+CCAdditions.m */; };
+		346E8DB41623C48B00E00CB8 /* EGOCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 346E8DB31623C48B00E00CB8 /* EGOCache.m */; };
+		346E8DB51623C48B00E00CB8 /* EGOCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 346E8DB31623C48B00E00CB8 /* EGOCache.m */; };
+		346E8DB91623E09A00E00CB8 /* XMLReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 346E8DB81623E09A00E00CB8 /* XMLReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		346E8DBA1623E09A00E00CB8 /* XMLReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 346E8DB81623E09A00E00CB8 /* XMLReader.m */; };
+		346E8DC11624019700E00CB8 /* CCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 346E8DBF1624019700E00CB8 /* CCViewController.m */; };
+		346E8DC21624019700E00CB8 /* CCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 346E8DBF1624019700E00CB8 /* CCViewController.m */; };
+		346E8DC31624019700E00CB8 /* CCViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 346E8DC01624019700E00CB8 /* CCViewController.xib */; };
+		346E8DC41624019700E00CB8 /* CCViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 346E8DC01624019700E00CB8 /* CCViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +94,13 @@
 		3460B8141622C82200FA21B0 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3460B8151622C82200FA21B0 /* CCAppDelegate+CCAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CCAppDelegate+CCAdditions.h"; sourceTree = "<group>"; };
 		3460B8161622C82200FA21B0 /* CCAppDelegate+CCAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CCAppDelegate+CCAdditions.m"; sourceTree = "<group>"; };
+		346E8DB21623C48B00E00CB8 /* EGOCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGOCache.h; sourceTree = "<group>"; };
+		346E8DB31623C48B00E00CB8 /* EGOCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGOCache.m; sourceTree = "<group>"; };
+		346E8DB71623E09A00E00CB8 /* XMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLReader.h; sourceTree = "<group>"; };
+		346E8DB81623E09A00E00CB8 /* XMLReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLReader.m; sourceTree = "<group>"; };
+		346E8DBE1624019600E00CB8 /* CCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCViewController.h; sourceTree = "<group>"; };
+		346E8DBF1624019700E00CB8 /* CCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCViewController.m; sourceTree = "<group>"; };
+		346E8DC01624019700E00CB8 /* CCViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CCViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,6 +218,9 @@
 				3460B8161622C82200FA21B0 /* CCAppDelegate+CCAdditions.m */,
 				3460B7E51622C7FB00FA21B0 /* CCAppDelegate.h */,
 				3460B7E61622C7FB00FA21B0 /* CCAppDelegate.m */,
+				346E8DBE1624019600E00CB8 /* CCViewController.h */,
+				346E8DBF1624019700E00CB8 /* CCViewController.m */,
+				346E8DC01624019700E00CB8 /* CCViewController.xib */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -210,6 +228,10 @@
 		3460B8281622CB9F00FA21B0 /* Thirdparty */ = {
 			isa = PBXGroup;
 			children = (
+				346E8DB71623E09A00E00CB8 /* XMLReader.h */,
+				346E8DB81623E09A00E00CB8 /* XMLReader.m */,
+				346E8DB21623C48B00E00CB8 /* EGOCache.h */,
+				346E8DB31623C48B00E00CB8 /* EGOCache.m */,
 				3460B8131622C82200FA21B0 /* Reachability.h */,
 				3460B8141622C82200FA21B0 /* Reachability.m */,
 				3460B80B1622C82200FA21B0 /* JSONKit.h */,
@@ -295,6 +317,7 @@
 				3460B7EB1622C7FB00FA21B0 /* Default@2x.png in Resources */,
 				3460B7ED1622C7FB00FA21B0 /* Default-568h@2x.png in Resources */,
 				34558C611623203A009E3312 /* Config.plist in Resources */,
+				346E8DC31624019700E00CB8 /* CCViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,6 +327,7 @@
 			files = (
 				3460B7FF1622C7FB00FA21B0 /* InfoPlist.strings in Resources */,
 				34558C621623203A009E3312 /* Config.plist in Resources */,
+				346E8DC41624019700E00CB8 /* CCViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +363,9 @@
 				3460B81F1622C82200FA21B0 /* Reachability.m in Sources */,
 				3460B8211622C82200FA21B0 /* CCAppDelegate+CCAdditions.m in Sources */,
 				34558C5E16231941009E3312 /* Foundation+CCAdditions.m in Sources */,
+				346E8DB41623C48B00E00CB8 /* EGOCache.m in Sources */,
+				346E8DB91623E09A00E00CB8 /* XMLReader.m in Sources */,
+				346E8DC11624019700E00CB8 /* CCViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,6 +381,9 @@
 				3460B8201622C82200FA21B0 /* Reachability.m in Sources */,
 				3460B8221622C82200FA21B0 /* CCAppDelegate+CCAdditions.m in Sources */,
 				34558C5F16231941009E3312 /* Foundation+CCAdditions.m in Sources */,
+				346E8DB51623C48B00E00CB8 /* EGOCache.m in Sources */,
+				346E8DBA1623E09A00E00CB8 /* XMLReader.m in Sources */,
+				346E8DC21624019700E00CB8 /* CCViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

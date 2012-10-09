@@ -1,16 +1,15 @@
-//#import <sys/utsname.h>
-//#import <CoreTelephony/CTCarrier.h>
-//#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import "CCRequest.h"
 #import "JSONKit.h"
 #import "CCRequestManager.h"
 #import "CCAppDelegate+CCAdditions.h"
-//#import "Foundation+KGOAdditions.h"
+#import "EGOCache.h"
+#import "XMLReader.h"
 
 NSString * const CCRequestErrorDomain = @"info.nemoworks.CCRequest.ErrorDomain";
 
 NSString * const CCRequestDurationPrefKey = @"CCRequestDuration";
-NSString * const CCRequestLastRequestTime = @"last";
+NSString * const CCRequestLastRequestTime = @"never";
+NSString * const CCRequestIsCachedData =@"isCachedData";
 
 @interface CCRequest (Private)
 
@@ -69,28 +68,33 @@ NSString * const CCRequestLastRequestTime = @"last";
     if (self) {
 		self.cachePolicy = NSURLRequestUseProtocolCachePolicy;
 		self.timeout = 30;
-		self.expectedResponseType = [NSDictionary class];
+        self.minimumDuration=5;
+		self.expectedResponseType = [NSObject class];
+        self.format=CCResponseFormatJSON;
 	}
 	return self;
 }
 
-- (BOOL)connectWithResponseType:(Class)responseType callback:(JSONObjectHandler)callback
-{
-    self.handler = [callback copy];
-    self.expectedResponseType = responseType;
-    return [self connect];
-}
+//- (BOOL)connectWithResponseType:(Class)responseType callback:(JSONObjectHandler)callback
+//{
+//    self.handler = [callback copy];
+//    self.expectedResponseType = responseType;
+//    return [self connect];
+//}
+//
+//- (BOOL)connectWithCallback:(JSONObjectHandler)callback
+//{
+//    self.handler = [callback copy];
+//    return [self connect];
+//}
 
-- (BOOL)connectWithCallback:(JSONObjectHandler)callback
-{
-    self.handler = [callback copy];
-    return [self connect];
-}
-
-- (BOOL)connect {
+-(BOOL) connectWithCache:(BOOL)withCache{
+    
     NSError *error = nil;
     NSDictionary *userInfo = nil;
     BOOL success = NO;
+    
+    NSString *urlAbsStr=[self.url absoluteString];
     
     if (self.minimumDuration && [self isUnderMinimumDuration]) {
         // don't want to show an error just because the data is fresh
@@ -98,66 +102,47 @@ NSString * const CCRequestLastRequestTime = @"last";
         [self cancel];
         return NO;
         
-    } else if (_connection) {
+    }
+    
+    if (_connection) {
         userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"could not connect because the connection is already in use", @"message", nil];
-        error = [NSError errorWithDomain:CCRequestErrorDomain code:CCRequestErrorBadRequest userInfo:userInfo];
-
-	} else {
-        DLog(@"requesting %@", [self.url absoluteString]);
+        error = [NSError errorWithDomain:CCRequestErrorDomain code:CCRequestErrorBadRequest userInfo:userInfo];        
+	}else{
+        EGOCache *localCache = [EGOCache currentCache];
+        if (withCache && [localCache hasCacheForKey:urlAbsStr]){
+            DLog(@"Returning local cache of %@", [self.url absoluteString]);
+            self.result=[[EGOCache currentCache] objectForKey:urlAbsStr];
+            [self.delegate request:self didReceiveResult:self.result];
+            return YES;
+        }else {
+            DLog(@"requesting %@", [self.url absoluteString]);
+            
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.url cachePolicy:self.cachePolicy timeoutInterval:self.timeout];
+                    
+            if (self.ifModifiedSince) {
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+                [formatter setDateFormat:@"EEE', 'dd' 'MM' 'yyyy' 'HH':'mm':'ss' GMT'"];
+                NSString *dateString = [formatter stringFromDate:self.ifModifiedSince];
+                [request setValue:dateString forHTTPHeaderField:@"If-Modified-Since"];
+            }
         
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.url cachePolicy:self.cachePolicy timeoutInterval:self.timeout];
-//        static NSString *userAgent = nil;
-//        if (userAgent == nil) {
-//            // app info
-//            NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-//
-//            // hardware info
-//            struct utsname systemInfo;
-//            uname(&systemInfo);
-//
-//            // carrier info
-//            CTTelephonyNetworkInfo *networkInfo = [[[CTTelephonyNetworkInfo alloc] init] autorelease];
-//            CTCarrier *carrier = [networkInfo subscriberCellularProvider];
-//            NSString *carrierName = [carrier carrierName];
-//            if (!carrierName) {
-//                carrierName = @"";
-//            }
-//            
-//            userAgent = [[NSString alloc] initWithFormat:@"%@/%@ (%@; %@) %@/%@ %@",
-//                         [infoDict objectForKey:@"CFBundleName"],
-//                         [infoDict objectForKey:@"CFBundleVersion"],
-//                         [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding],
-//                         [[UIDevice currentDevice] systemVersion],
-//                         KUROGO_FRAMEWORK_NAME,
-//                         KUROGO_FRAMEWORK_VERSION,
-//                         carrierName];
-//        }
-//        [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
-//
-        
-        if (self.ifModifiedSince) {
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-            [formatter setDateFormat:@"EEE', 'dd' 'MM' 'yyyy' 'HH':'mm':'ss' GMT'"];
-            NSString *dateString = [formatter stringFromDate:self.ifModifiedSince];
-            [request setValue:dateString forHTTPHeaderField:@"If-Modified-Since"];
-        }
-
-        if (![NSURLConnection canHandleRequest:request]) {
-            userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"cannot handle request: %@", [self.url absoluteString]], @"message", nil];
-            error = [NSError errorWithDomain:CCRequestErrorDomain code:CCRequestErrorBadRequest userInfo:userInfo];
-        } else {
-            _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
-            if (_connection) {
-                _data = [[NSMutableData alloc] init];
-                success = YES;
+            if (![NSURLConnection canHandleRequest:request]) {
+                userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"cannot handle request: %@", urlAbsStr], @"message", nil];
+                error = [NSError errorWithDomain:CCRequestErrorDomain code:CCRequestErrorBadRequest userInfo:userInfo];
+            } else {
+                _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+                if (_connection) {
+                    _data = [[NSMutableData alloc] init];
+                    success = YES;
+                }
             }
         }
     }
     
     if (!success) {
         if (!error) {
-            userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"could not connect to url: %@", [self.url absoluteString]], @"message", nil];
+            userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"could not connect to url: %@", urlAbsStr], @"message", nil];
             error = [NSError errorWithDomain:CCRequestErrorDomain code:CCRequestErrorBadRequest userInfo:userInfo];
         }
         [[CCRequestManager sharedManager] showAlertForError:error request:self];
@@ -168,7 +153,13 @@ NSString * const CCRequestLastRequestTime = @"last";
     }
     
 	return success;
+
 }
+- (BOOL)connect {
+    return [self connectWithCache:YES];
+
+}
+    
 
 - (BOOL)isUnderMinimumDuration
 {
@@ -236,77 +227,43 @@ NSString * const CCRequestLastRequestTime = @"last";
 
 // no further messages will be received after this
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-	_connection = nil;
+	
+    _connection = nil;
 
     [CC_SHARED_APP_DELEGATE() hideNetworkActivityIndicator];
 	
-	if (!self.format || [self.format isEqualToString:@"json"]) {
-        
-		NSString *jsonString = [[NSString alloc] initWithData:_data encoding:NSUTF8StringEncoding];
-		
-		_data = nil;
-		
-		if (!jsonString) {
-			NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"empty response", @"message", nil];
-			[self terminateWithErrorCode:CCRequestErrorBadResponse userInfo:params];
-			return;
-		}
-        
-        
-		
-//		SBJsonParser *jsonParser = [[[SBJsonParser alloc] init] autorelease];
-//		NSError *error = nil;
-//		id parsedResult = [jsonParser objectWithString:jsonString error:&error];
-//		if (error) {
-//			[self terminateWithErrorCode:CCRequestErrorBadResponse userInfo:[error userInfo]];
-//			return;
-//		}
-//		
-//		if (![parsedResult isKindOfClass:[NSDictionary class]]) {
-//			NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"cannot parse response", @"message", nil];
-//			[self terminateWithErrorCode:CCRequestErrorBadResponse userInfo:params];
-//			return;
-//		}
-//        
-//		NSDictionary *resultDict = (NSDictionary *)parsedResult;
-//		id responseError = [resultDict objectForKey:@"error"];
-//		if (![responseError isKindOfClass:[NSNull class]]) {
-//            // TODO: handle this more thoroughly
-//			[self terminateWithErrorCode:CCRequestErrorServerMessage userInfo:responseError];
-//			return;
-//		}
-//		
-//        // TODO: do something with this
-//        NSInteger version = [resultDict integerForKey:@"version"];
-//        if (version) {
-//            ;
-//        }
-//        
-//		self.result = [resultDict objectForKey:@"response"];
-//		
-//	} else {
-//		self.result = [_data autorelease];
-//		_data = nil;
-//	}
-//
-        NSError *error = nil;
-        id parsedResult=[jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode error:&error];
-        if (error){
-            [self terminateWithErrorCode:CCRequestErrorBadResponse userInfo:[error userInfo]];
-            return;
-        }
-        
-        NSDictionary *resultDict = (NSDictionary *)parsedResult;
-        id responseError = [resultDict objectForKey:@"error"];
-        if (![responseError isKindOfClass:[NSNull class]]) {
-        	[self terminateWithErrorCode:CCRequestErrorServerMessage userInfo:responseError];
-        	return;
-        }
-        
-        self.result=resultDict;
-
+    NSString *resultString =[[NSString alloc] initWithData:_data encoding:NSUTF8StringEncoding];;
+    _data = nil;
+    
+    if (!resultString) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"empty response", @"message", nil];
+        [self terminateWithErrorCode:CCRequestErrorBadResponse userInfo:params];
+        return;
     }
     
+    NSObject *resultObj = nil;
+    
+    NSError *error = nil;
+    
+    switch (self.format) {
+            
+        case CCResponseFormatXML:
+            resultObj=[XMLReader dictionaryForXMLString:resultString error:&error];
+            break;
+        default: case CCResponseFormatJSON:
+            resultObj = [resultString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode error:&error];
+            break;
+    }
+    if (error){
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"malformed response", @"message", [error userInfo], @"error",nil];
+        [self terminateWithErrorCode:CCRequestErrorBadResponse userInfo:params];
+        return;
+    }
+
+    self.result=[resultObj copy];
+    
+
+
 	BOOL canProceed = [self.result isKindOfClass:self.expectedResponseType];
 	if (!canProceed) { 
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"result type does not match expected response type", @"message", nil];
@@ -328,6 +285,14 @@ NSString * const CCRequestLastRequestTime = @"last";
         
         [userDefaults setObject:mutablePrefs forKey:CCRequestDurationPrefKey];
         [userDefaults synchronize];
+        
+        EGOCache *localCache = [EGOCache currentCache];
+        //caching the original resulted string
+        [localCache setObject:resultString forKey:[self.url absoluteString]];
+        [NSThread sleepForTimeInterval:2];
+        NSLog(@"%@ cached %@", [self.url absoluteString], [localCache hasCacheForKey:[self.url absoluteString]]?@"successfully":@"unsuccessfully");
+        NSLog(@"what's cached %@ ",  [localCache objectForKey:[self.url absoluteString]]);
+        
     }
     
 	if (self.handler != nil) {

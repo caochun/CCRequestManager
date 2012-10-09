@@ -51,6 +51,22 @@ typedef enum {
 	CCRequestErrorOther
 } CCRequestErrorCode;
 
+typedef enum{
+    CCResponseFormatXML,
+    CCResponseFormatJSON
+}CCResponseFormat;
+
+
+typedef enum {
+    CCRequestUseProtocolCachePolicy = 0,
+    CCRequestReloadIgnoringLocalCacheData = 1,
+    CCRequestReloadIgnoringLocalAndRemoteCacheData =4,
+    CCRequestReloadIgnoringCacheData = CCRequestReloadIgnoringLocalCacheData,
+    CCRequestReturnCacheDataElseLoad = 2,
+    CCRequestReturnCacheDataDontLoad = 3,
+    CCRequestReloadRevalidatingCacheData = 5
+}CCRequestCachePoliy;
+
 @interface CCRequest : NSObject {
 	
 	NSMutableData *_data;
@@ -65,32 +81,31 @@ typedef enum {
 @property(nonatomic, retain) NSDictionary *getParams;
 @property(nonatomic, retain) NSDictionary *postParams;
 @property(nonatomic, retain) NSDate *ifModifiedSince; // If-Modified-Since header
-
 // maximum and minimum supported API versions. if either of them is
-// different from the preferred version, set them manually after
-// the request object is created.
-//@property(nonatomic) NSInteger apiMaxVersion;
-//@property(nonatomic) NSInteger apiMinVersion;
+
 
 @property(nonatomic) NSTimeInterval minimumDuration;
 
-@property(nonatomic, retain) NSString *format; // default is json
+@property(nonatomic) CCResponseFormat format; // default is json
 @property(nonatomic) NSURLRequestCachePolicy cachePolicy; // default is NSURLRequestReloadIgnoringLocalAndRemoteCacheData
 @property(nonatomic) NSTimeInterval timeout; // default is 30 seconds
 
-@property(nonatomic, assign) Class expectedResponseType; // default is NSDictionary
+@property(nonatomic, assign) Class expectedResponseType; // default is NSObject
 @property(nonatomic, copy) JSONObjectHandler handler;
 
 @property(nonatomic, retain) id result;
 
 // urls are of the form
-// https://<host>/<apipath>/<path>?<key>=<value>
+// https://<host>/<extension>/<apipath>/<resourcePath>?<key>=<value>
 @property(nonatomic, retain) NSURL *url;
 @property(nonatomic, assign) id<CCRequestDelegate> delegate;
 
 - (BOOL)connect;
-- (BOOL)connectWithResponseType:(Class)responseType callback:(JSONObjectHandler)callback;
-- (BOOL)connectWithCallback:(JSONObjectHandler)callback;
+- (BOOL)connectWithCache:(BOOL)withCache;
+
+//- (BOOL)connectWithResponseType:(Class)responseType callback:(JSONObjectHandler)callback;
+//- (BOOL)connectWithCallback:(JSONObjectHandler)callback;
+
 - (void)cancel;  // call to stop receiving messages
 
 + (CCRequestErrorCode)internalCodeForNSError:(NSError *)error;

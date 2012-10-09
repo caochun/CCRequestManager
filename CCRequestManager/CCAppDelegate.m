@@ -8,17 +8,29 @@
 
 #import "CCAppDelegate.h"
 #import "JSONKit.h"
+#import "XMLReader.h"
+#import "CCRequest.h"
+#import "CCRequestManager.h"
+#import "CCViewController.h"
 
 @implementation CCAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     
-    NSString *jsonStr= @"[{\"nid\":\"4\",\"type\":\"news\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1345262039\",\"changed\":\"1349348947\",\"comment\":\"2\",\"promote\":\"1\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"4\",\"revision_uid\":\"1\",\"title\":\"news2\",\"body\":\"something big is gonna happen\",\"teaser\":\"something big is gonna happen\",\"log\":\"\",\"revision_timestamp\":\"1349348947\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"path\":\"content/news2\",\"signup\":0,\"last_comment_timestamp\":\"1345262039\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":[],\"uuid\":false,\"revision_uuid\":\"eaa21918-0e13-11e2-958c-f23c91dfeecb\"},{\"nid\":\"3\",\"type\":\"news\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1345262012\",\"changed\":\"1345262012\",\"comment\":\"2\",\"promote\":\"1\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"3\",\"revision_uid\":\"1\",\"title\":\"news1\",\"body\":\"this is the first news\",\"teaser\":\"this is the first news\",\"log\":\"\",\"revision_timestamp\":\"1345262012\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"path\":\"content/news1\",\"signup\":0,\"last_comment_timestamp\":\"1345262012\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":[],\"uuid\":false,\"revision_uuid\":false}]";
-    NSLog(@"%@",(NSDictionary *)[jsonStr objectFromJSONString]);
+//    NSString *jsonStr= @"[{\"nid\":\"4\",\"type\":\"news\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1345262039\",\"changed\":\"1349348947\",\"comment\":\"2\",\"promote\":\"1\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"4\",\"revision_uid\":\"1\",\"title\":\"news2\",\"body\":\"something big is gonna happen\",\"teaser\":\"something big is gonna happen\",\"log\":\"\",\"revision_timestamp\":\"1349348947\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"path\":\"content/news2\",\"signup\":0,\"last_comment_timestamp\":\"1345262039\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":[],\"uuid\":false,\"revision_uuid\":\"eaa21918-0e13-11e2-958c-f23c91dfeecb\"},{\"nid\":\"3\",\"type\":\"news\",\"language\":\"\",\"uid\":\"1\",\"status\":\"1\",\"created\":\"1345262012\",\"changed\":\"1345262012\",\"comment\":\"2\",\"promote\":\"1\",\"moderate\":\"0\",\"sticky\":\"0\",\"tnid\":\"0\",\"translate\":\"0\",\"vid\":\"3\",\"revision_uid\":\"1\",\"title\":\"news1\",\"body\":\"this is the first news\",\"teaser\":\"this is the first news\",\"log\":\"\",\"revision_timestamp\":\"1345262012\",\"format\":\"1\",\"name\":\"admin\",\"picture\":\"\",\"data\":\"a:0:{}\",\"path\":\"content/news1\",\"signup\":0,\"last_comment_timestamp\":\"1345262012\",\"last_comment_name\":null,\"comment_count\":\"0\",\"taxonomy\":[],\"uuid\":false,\"revision_uuid\":false}]";
+//    NSString *xmlStr =@"<note><to>George</to><from>John</from><heading>Reminder</heading><body>Don't forget the meeting!</body></note>";
+//    NSError *error=nil;
+    //NSLog(@"%@", [XMLReader dictionaryForXMLString:xmlStr error:error]);
+//    NSDictionary *nd = [jsonStr objectFromJSONString];
+//    NSLog(@"%@",nd);
+//    CCRequest *request = [[CCRequestManager sharedManager] requestWithDelegate:self resourcePath:@"views/news" params:nil];
+//    [request connectWithCache:YES];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    self.window.rootViewController=[[CCViewController alloc]initWithNibName:@"CCViewController" bundle:nil];
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -49,5 +61,9 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
+
+
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CCRequest.h"
 
 @interface CCAppDelegate : UIResponder <UIApplicationDelegate>{
     NSInteger networkActivityRefCount;

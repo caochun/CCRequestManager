@@ -11,7 +11,7 @@
     Reachability *_reachability;
 
     // the name of the server.
-	NSString *_server;
+//	NSString *_server;
     
     // the base URL of Kurogo. generally the same as _host, but if the entire
     // website is run out of a subdirectory, e.g. www.example.com/department,
@@ -23,13 +23,13 @@
 	NSString *_accessToken;
 	NSURL *_baseURL;
 
-    CCRequest *_helloRequest;
-    CCRequest *_retryRequest;
-    
-    // login info
-    CCRequest *_sessionRequest;
-    CCRequest *_logoutRequest;
-    NSDictionary *_sessionInfo;
+//    CCRequest *_helloRequest;
+//    CCRequest *_retryRequest;
+//    
+//    // login info
+//    CCRequest *_sessionRequest;
+//    CCRequest *_logoutRequest;
+//    NSDictionary *_sessionInfo;
 
 //    // push notification info
 //    CCRequest *_deviceRegistrationRequest;
@@ -47,9 +47,13 @@
 //- (BOOL)isModuleAvailable:(ModuleTag *)moduleTag;
 //- (BOOL)isModuleAuthorized:(ModuleTag *)moduleTag;
 
-- (CCRequest *)requestWithDelegate:(id<CCRequestDelegate>)delegate
-                               resource:(NSString *)resource
-                             params:(NSDictionary *)params;
+- (CCRequest *)requestResourceWithDelegate:(id<CCRequestDelegate>)delegate
+                                resourcePath:(NSString *)resourcePath
+                            params:(NSDictionary *)params;
+
+- (CCRequest *)requestURLWithDelegate:(id<CCRequestDelegate>)delegate
+                      rawUrl:(NSString *)rawUrl
+                            params:(NSDictionary *)params;
 
 - (void)showAlertForError:(NSError *)error request:(CCRequest *)request;
 - (void)showAlertForError:(NSError *)error request:(CCRequest *)request delegate:(id<UIAlertViewDelegate>)delegate;
@@ -70,7 +74,7 @@
 
 //- (NSDictionary *)sessionInfo;
 
-@property (nonatomic, retain) NSString *loginPath;
+//@property (nonatomic, retain) NSString *loginPath;
 
 //#pragma mark Push notification registration
 //
